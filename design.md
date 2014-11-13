@@ -21,7 +21,7 @@ I foresee an inheritance model somewhat like this:
 An `XmlNode` is the base type for all the other more specific nodes that can exist in an XML document.
 
 
-### Attributes:
+### Class Variables:
 
 1. Children
 	- "Children" is a vector of all the child XmlNodes
@@ -29,8 +29,20 @@ An `XmlNode` is the base type for all the other more specific nodes that can exi
 	- "Parent" is a reference to the parent XmlNode
 3. Contents
 	- "Contents" will only be used by the `TextElement` class, and will hold the actual contents of that node.
+4. Attributes
+	- "Attributes" is a map of the key-value pairs of the attributes on an element (style="color: blue;")
+5. Type
+	- "Type" contains the type of a node. For example an element `<i></i>` would have a type of `i`. 
 
 ### Methods:
 
-
+- XmlNode(string type, map<string, string> attributes)
+- has_children(): bool
+- is_root(): bool
+- has_text(): bool
+- has_attribute(string): bool
+- get_text(): string
+- get_parent(): unique_ptr<XmlNode>
+- get_attribute(string): string
+- get_type(): string
 
