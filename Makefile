@@ -1,4 +1,4 @@
 
 all:
-	g++ -std=c++11 parser.cc
+	g++ -std=c++11 main.cc
 
