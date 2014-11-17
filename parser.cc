@@ -4,11 +4,35 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <locale>
+#include <algorithm>
 #include <map>
 
 #include "parser.h"
 
 using namespace std;
+
+
+
+
+int upper(int c){
+  return std::toupper((unsigned char)c);
+}
+int lower(int c){
+  return std::tolower((unsigned char)c);
+}
+std::string strLower(std::string str){
+    std::transform(str.begin(), str.end(), str.begin(), lower); // Make it lowercase
+    return str;
+}
+std::string strUpper(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), upper); // Make it uppercase
+
+    return str;
+}
+
+
+
 
 bool XmlNode::has_children(){
 	if (!_children.empty()){
@@ -25,7 +49,15 @@ bool XmlNode::is_root(){
 }
 
 bool XmlNode::has_text(){
-	if (_contents.empty()){
+	if (_contents.length()){
+		return true;
+	}
+	return false;
+}
+
+bool XmlNode::has_attribute(string key){
+	key = strLower(key);
+	if (_attributes.count(key) > 0){
 		return true;
 	}
 	return false;
@@ -36,6 +68,7 @@ XmlNode* XmlNode::get_parent(){ return _parent; }
 vector<XmlNode*> XmlNode::get_children(){ return _children; }
 string XmlNode::get_type(){ return _type; }
 string XmlNode::get_attribute(string key){
+	key = strLower(key);
 	if (_attributes.count(key) > 0){
 		return _attributes[key];
 	} else {
@@ -55,23 +88,23 @@ void XmlNode::add_child(XmlNode* child){
 }
 
 XmlNode::XmlNode(string type):_parent(0){
-	_type = type;
+	_type = strLower(type);
 }
 
 XmlNode::XmlNode(string type, map<string, string> attributes):_parent(0){
-	_type = type;
+	_type = strLower(type);
 	_attributes = attributes;
 }
 
 XmlNode::XmlNode(XmlNode* parent, string type, string contents):_parent(0){
-	_type = type;
+	_type = strLower(type);
 	_contents = contents;
 	_parent = parent;
 	_parent->add_child(this);
 }
 
 XmlNode::XmlNode(XmlNode* parent, string type, map<string, string> attributes):_parent(0){
-	_type = type;
+	_type = strLower(type);
 	_attributes = attributes;
 	_parent = parent;
 	_parent->add_child(this);
@@ -79,14 +112,27 @@ XmlNode::XmlNode(XmlNode* parent, string type, map<string, string> attributes):_
 
 void xml_tree_printer(XmlNode* node){
 	for (int i = 0; i < node->get_depth(); ++i){
-		std::cout << "\t";
+		std::cout << "    ";
 	}
-	std::cout << "<" << node->get_type() << ">" << std::endl;
+	if (node->has_text()){
+		std::cout << "'" << node->get_text() << "'" << std::endl;
+	} else {
+		std::cout << "<" << node->get_type() << ">" << std::endl;
+	}
+
 	if (node->has_children()){
 		vector<XmlNode*> children = node->get_children();
 		for (int i = 0; i < children.size(); ++i){
 			xml_tree_printer(children[i]);
 		}
+	}
+
+	if (!node->has_text()){
+		for (int i = 0; i < node->get_depth(); ++i){
+			std::cout << "    ";
+		}
+		std::cout << "</" << node->get_type() << ">" << std::endl;
+		
 	}
 
 }
@@ -96,6 +142,28 @@ void print_xml_tree(XmlNode* root){
 }
 
 
+void print_href(XmlNode* node){
+	string key("href");
+	if (node->has_attribute(key)){
+		std::cout << node->get_attribute(key) << std::endl;
+	}
+	if (node->has_children()){
+		vector<XmlNode*> children = node->get_children();
+		for (int i = 0; i < children.size(); ++i){
+			print_href(children[i]);
+		}
+	}
+}
+
+// Macro for conveniently clearing all variables.
+#ifndef _CLEAR_
+#define _CLEAR_ state = ""; \
+type = ""; \
+tmp_value = ""; \
+tmp_key = ""; \
+tmp_type = ""; \
+attributes.clear(); 
+#endif
 
 XmlNode* build_xml_tree(istringstream* input_document){
 	// istringstream document(input_document);
@@ -107,6 +175,8 @@ XmlNode* build_xml_tree(istringstream* input_document){
 	string contents;
 	string type;
 	string tmp_key, tmp_value;
+	string tmp_type;
+
 	// Stands for "current character"
 	char cc;
 
@@ -125,7 +195,6 @@ XmlNode* build_xml_tree(istringstream* input_document){
 	// 6. Unknown
 	string state("");
 
-	std::cout << cc << ", '" << state << "'" << std::endl;
 	while (!document.eof()){
 		cc = document.get();
 
@@ -142,22 +211,26 @@ XmlNode* build_xml_tree(istringstream* input_document){
 			}
 		} else if (state == "opening" || state == "type"){
 			if (!isspace(cc) && cc != '>' && cc != '/'){
-				state = "type";
-				type.push_back(cc);
+				if (cc == '!'){
+					state = "doctype";
+				} else {				
+					state = "type";
+					type.push_back(cc);
+				}
 			} else if (type.size() && isspace(cc)){
 				state = "key";
 			} else if (!type.size() && cc == '/'){
 				state = "closing";
 			} else if (cc == '>'){
-				state = "";
-				print_xml_tree(root);
 				parent = new XmlNode(parent, type, attributes);
-				type = "";
-				tmp_value = "";
-				tmp_key = "";
+				_CLEAR_;
+			}
+		} else if (state == "doctype"){
+			if (cc == '>'){
+				state = "";
 			}
 		} else if (state == "key"){
-			if (!isspace(cc) && cc != '='){
+			if (!isspace(cc) && cc != '=' && cc != '>'){
 				// If there was a key but no value, and we're now looking at a second key.
 				if (tmp_key.size() && attributes.count(tmp_key)){
 					tmp_key = "";
@@ -166,14 +239,10 @@ XmlNode* build_xml_tree(istringstream* input_document){
 			} else if (tmp_key.size() && cc == '='){
 				state = "value";
 			} else if (isspace(cc) && tmp_key.size()){
-				attributes[tmp_key] = "";
+				attributes[strLower(tmp_key)] = "";
 			} else if (cc == '>'){
-				state = "";
-				print_xml_tree(root);
 				parent = new XmlNode(parent, type, attributes);
-				type = "";
-				tmp_value = "";
-				tmp_key = "";
+				_CLEAR_;
 			}
 		} else if (state == "value"){
 			// We get the value of things in quotes
@@ -194,7 +263,7 @@ XmlNode* build_xml_tree(istringstream* input_document){
 					}
 					cc = document.get();
 				}
-				attributes[tmp_key] = tmp_value;
+				attributes[strLower(tmp_key)] = tmp_value;
 				tmp_value = "";
 				tmp_key = "";
 				state = "key";
@@ -203,17 +272,40 @@ XmlNode* build_xml_tree(istringstream* input_document){
 			if (cc != '<'){
 				contents.push_back(cc);
 			} else {
-				new XmlNode(parent, string("text"), contents);
+
+				// Prevents just whitespace from being made into a text node.
+				for (int i = 0; i < contents.length(); ++i){
+					if (!isspace(contents.c_str()[i])){
+						new XmlNode(parent, string("text"), contents);
+						break;
+					}
+				}
+
 				contents = "";
 				state = "opening";
 			}
 		} else if (state == "closing"){
 			if (cc == '>'){
-				parent = parent->get_parent();
+				XmlNode* tn = parent;
+				while (tn->get_type() != tmp_type){
+					if (tn->is_root()){
+						std::cout << parent->get_type() << std::endl;
+						std::cout << "THIS XML DOCUMENT IS STUPID AND I HATE IT. WE'RE DONE!" << std::endl;
+						tn = 0;
+						tn->is_root();
+					}
+					tn = tn->get_parent();
+				}
+
+				parent = tn->get_parent();
 				state = "";
+				tmp_type = "";
+				_CLEAR_;
+			} else {
+
+				tmp_type.push_back(cc);
 			}
 		}
-		std::cout << cc << ", '" << state << "'" << std::endl;
 	}
 	return root;
 }
