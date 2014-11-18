@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "parser.cc"
+#include "xml_node.cc"
 #include "request.cc"
 #include "url_parse.cc"
 #include "xml_tree.cc"

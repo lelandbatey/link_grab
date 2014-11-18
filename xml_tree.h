@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 
-#include "parser.cc"
+#include "xml_node.cc"
 
 using namespace std;
 
