@@ -1,12 +1,19 @@
 
-link_grab:
-	g++ -std=c++11 main.cc -lcurl -o link_grab
-
-all: link_grab
-
-install: link_grab
-	cp link_grab ~/bin/
+BIN_DIR = ~/bin/
+OUTPUT_NAME = link_grab
+COMPILER = g++ -DDEBUG -g -std=c++11
 
 clean:
-	rm link_grab
+	rm -fv $(OUTPUT_NAME)
+
+executable:
+	$(COMPILER) main.cc -lcurl -o $(OUTPUT_NAME)
+
+all: executable
+
+release: COMPILER = g++ -g -std=c++11
+release: clean executable
+
+install: release
+	cp $(OUTPUT_NAME) ~/bin/
 
