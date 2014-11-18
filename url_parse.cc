@@ -23,13 +23,11 @@ ParsedUrl::ParsedUrl(string begin_str):
 {
 	ParseStr input(begin_str);
 
-	std::cout << begin_str << std::endl;
+	// std::cout << begin_str << std::endl;
 
 	string buffer("");
 	string state("");
 	string scheme_buf, host_buff, path_buf;
-	// char cc;
-
 
 	while (!input.eof()){
 		char cc;
@@ -51,7 +49,6 @@ ParsedUrl::ParsedUrl(string begin_str):
 			}
 		} else if (state == "scheme"){
 			buffer.push_back(cc);
-			std::cout << buffer << std::endl;
 			if (buffer == "//"){
 				state = "host";
 				buffer = "";
@@ -63,7 +60,6 @@ ParsedUrl::ParsedUrl(string begin_str):
 				state = "path";
 			}
 			buffer.push_back(cc);
-			std::cout << cc << std::endl;
 		} else if (state == "path"){
 			buffer.push_back(cc);
 		}
@@ -85,14 +81,16 @@ ParsedUrl::ParsedUrl(string begin_str):
 	if (path_buf.length()){
 		_path = path_buf;
 	}
-	std::cout << "Scheme: '" << scheme_buf << "'"<< std::endl;
-	std::cout << "Host: '" << host_buff << "'"<< std::endl;
-	std::cout << "Path: '" << path_buf << "'"<< std::endl;
+	// std::cout << "Scheme: '" << scheme_buf << "'"<< std::endl;
+	// std::cout << "Host: '" << host_buff << "'"<< std::endl;
+	// std::cout << "Path: '" << path_buf << "'"<< std::endl;
 
 }
 string ParsedUrl::get_url(){
-	return string(this->_scheme+"://"+this->_host+":"
-		+dubToStr(double(this->_port))+this->_path);
+	// Ternery if so we only include port if it's not 80
+	return string(this->_scheme+"://"+this->_host
+		+ (this->_port != 80?":"+dubToStr(double(this->_port)):"")
+		+ this->_path);
 }
 ostream& operator<< (ostream &out, ParsedUrl &pUrl){
 	out << pUrl.get_url();
