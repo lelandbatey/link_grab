@@ -13,7 +13,7 @@ You'll need to install the `libcurl` libraries. On Cygwin these are just called 
 Installation
 ------------
 
-To compile the program, run `make` in this directory. To install, run `make install` or copy the binary "link_grabber" to wherever you'd like.
+To compile the program, run `make release` in this directory. To install, run `make install` or copy the binary "link_grab" to wherever you'd like.
 
 Usage
 -----
