@@ -1,12 +1,6 @@
-#include <iostream>
-#include <sstream>
-#include <ctype.h>
-#include <vector>
-#include <string>
-#include <memory>
-#include <locale>
 #include <algorithm>
-#include <map>
+#include <iostream>
+#include <string>
 
 #include "parser.h"
 #include "parse_str.h"
@@ -85,10 +79,5 @@ XmlNode::XmlNode(XmlNode* parent, string type, map<string, string> attributes):
 	_type(strLower(type)), _attributes(attributes), _parent(parent){
 	_parent->add_child(this);
 }
-
-
-
-
-
 
 

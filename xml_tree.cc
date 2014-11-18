@@ -56,7 +56,6 @@ attributes.clear();
 #endif
 
 void XmlTree::build_tree(istringstream* input_document){
-	// istringstream document(input_document);
 	istringstream& document = *input_document; 
 	XmlNode* root = &_root;
 
@@ -180,7 +179,6 @@ void XmlTree::build_tree(istringstream* input_document){
 			if (cc != '<'){
 				contents.push_back(cc);
 			} else {
-
 				// Prevents just whitespace from being made into a text node.
 				for (int i = 0; i < contents.length(); ++i){
 					if (!isspace(contents.c_str()[i])){
@@ -195,10 +193,9 @@ void XmlTree::build_tree(istringstream* input_document){
 		} else if (state == "closing"){
 			if (cc == '>'){
 				XmlNode* tn = parent;
-				// std::cout << tn->get_type() << std::endl;
 				while (tn->get_type() != tmp_type){
 					if (tn->is_root()){
-						std::cout << parent->get_type() << std::endl;
+						// Force a segfault out of rage
 						std::cout << "THIS XML DOCUMENT IS STUPID AND I HATE IT. WE'RE DONE!" << std::endl;
 						tn = 0;
 						tn->is_root();
@@ -213,9 +210,7 @@ void XmlTree::build_tree(istringstream* input_document){
 				tmp_type.push_back(cc);
 			}
 		}
-		// std::cout << cc << ", " << state << std::endl;
 	}
-	// return root;
 }
 
 

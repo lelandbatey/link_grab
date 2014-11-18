@@ -45,12 +45,4 @@ private:
 };
 
 
-
-
-
-// XmlNode* build_xml_tree_from_file(const string& file_name);
-// XmlNode* build_xml_tree(string input_document);
-XmlNode* build_xml_tree(istringstream input_document);
-
-
 #endif

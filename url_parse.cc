@@ -16,14 +16,13 @@ using namespace std;
 //     hostname/path
 //     hostname
 //
-// There are many possible URL formats, but I'm just going to ignore those
-// (for now).
+// There are many possible URL formats, but I'm going to ignore those (for
+// now).
 ParsedUrl::ParsedUrl(string begin_str):
 	_scheme("http"), _host(""), _port(80), _path("/") 
 {
 	ParseStr input(begin_str);
 
-	// std::cout << begin_str << std::endl;
 
 	string buffer("");
 	string state("");
@@ -81,10 +80,6 @@ ParsedUrl::ParsedUrl(string begin_str):
 	if (path_buf.length()){
 		_path = path_buf;
 	}
-	// std::cout << "Scheme: '" << scheme_buf << "'"<< std::endl;
-	// std::cout << "Host: '" << host_buff << "'"<< std::endl;
-	// std::cout << "Path: '" << path_buf << "'"<< std::endl;
-
 }
 
 string ParsedUrl::get_scheme(){ return _scheme; };
@@ -155,7 +150,6 @@ void print_vect(std::vector<string> v){
 		std::cout << "'" << v[i] << "', ";
 	}
 	std::cout << v.size() << std::endl;
-	// std::cout << v[v.size()-1] << std::endl;
 }
 
 string join_url(string host, string path){
@@ -166,19 +160,3 @@ string join_url(string host, string path){
 	return h.get_url();
 }
 
-
-
-// int main(int argc, char const *argv[]){
-// 	// string h("http://thing");
-// 	// string p("what/stuff/goes");
-
-// 	// join_url(h, p);
-// 	ParsedUrl url("lelandbatey.com/posts/2014/09/binary-tree-printer/");
-// 	ParsedUrl url2("/thing.html");
-
-// 	// std::cout << url2 << std::endl;
-
-// 	url.set_path("thing.html");
-// 	std::cout << url << std::endl;
-// 	return 0;
-// }

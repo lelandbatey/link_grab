@@ -17,8 +17,6 @@ public:
 
 	vector<string> find_all_attributes(string attribute_value);
 
-	// ~XmlTree();
-
 private:
 	XmlNode _root;
 	void build_tree(istringstream* input_document);
