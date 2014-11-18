@@ -5,6 +5,9 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+// #include <basic_string> /* std::to_string */
+
+#include "parse_str.h"
 
 
 
@@ -22,18 +25,19 @@ class ParsedUrl
 public:
 	ParsedUrl(string begin_str);
 
-	friend ostream& operator<< (ostream &out, Point &cPoint);
+	friend ostream& operator<< (ostream &out, ParsedUrl &pUrl);
 	string get_scheme();
 	string get_host();
-	string get_port();
+	int get_port();
 	string get_path();
-
 	string get_url();
+
+	void set_path(string path);
 
 private:
 	string _scheme;
 	string _host;
-	string _port;
+	int _port;
 	string _path;
 };
 

@@ -3,16 +3,113 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
-
+#include <string.h>
 
 
 using namespace std;
 // Given a string that is a host
 
+// Attempts to parse a url.
+// A url must be in one of threes formats (for now):
+//
+//     scheme://hostname/path
+//     hostname/path
+//     hostname
+//
+// There are many possible URL formats, but I'm just going to ignore those
+// (for now).
+ParsedUrl::ParsedUrl(string begin_str):
+	_scheme("http"), _host(""), _port(80), _path("/") 
+{
+	ParseStr input(begin_str);
+
+	std::cout << begin_str << std::endl;
+
+	string buffer("");
+	string state("");
+	string scheme_buf, host_buff, path_buf;
+	// char cc;
 
 
+	while (!input.eof()){
+		char cc;
+		cc = input.get();
 
+		if (state == ""){
+			if (cc == ':'){
+				state = "scheme";
+				scheme_buf = buffer;
+				buffer = "";
+			} else if (cc == '/'){
+				state = "path";
+				host_buff = buffer;
+				scheme_buf = "http";
+				buffer = "";
+				buffer.push_back(cc);
+			} else {
+				buffer.push_back(cc);
+			}
+		} else if (state == "scheme"){
+			buffer.push_back(cc);
+			std::cout << buffer << std::endl;
+			if (buffer == "//"){
+				state = "host";
+				buffer = "";
+			}
+		} else if (state == "host"){
+			if (cc == '/'){
+				host_buff = buffer;
+				buffer = "";
+				state = "path";
+			}
+			buffer.push_back(cc);
+			std::cout << cc << std::endl;
+		} else if (state == "path"){
+			buffer.push_back(cc);
+		}
+	}
+	if (state == "path"){
+		path_buf = buffer;
+	} else if (state == "host"){
+		host_buff = buffer;
+	} else if (state == ""){
+		host_buff = buffer;
+	}
 
+	if (scheme_buf.length()){
+		_scheme = scheme_buf;
+	}
+	if (host_buff.length()){
+		_host = host_buff;
+	}
+	if (path_buf.length()){
+		_path = path_buf;
+	}
+	std::cout << "Scheme: '" << scheme_buf << "'"<< std::endl;
+	std::cout << "Host: '" << host_buff << "'"<< std::endl;
+	std::cout << "Path: '" << path_buf << "'"<< std::endl;
+
+}
+string ParsedUrl::get_url(){
+	return string(this->_scheme+"://"+this->_host+":"
+		+dubToStr(double(this->_port))+this->_path);
+}
+ostream& operator<< (ostream &out, ParsedUrl &pUrl){
+	out << pUrl.get_url();
+	return out;
+}
+
+void ParsedUrl::set_path(string path){
+	std::vector<string> spl_path = split(path, '/');
+	string p("");
+
+	for (int i = 0; i < spl_path.size(); ++i){
+		if (spl_path[i].length()){
+			p += "/"+spl_path[i];
+		}
+	}
+	_path = p;
+}
 
 // Two functions for splitting a string. The first uses a pre-constructed
 // vector, the second returns a new vector.
@@ -51,20 +148,24 @@ void print_vect(std::vector<string> v){
 }
 
 string join_url(string host, string path){
-	vector<string> spl_host = split(host, '/');
-	print_vect(spl_host);
-	std::cout << join(split(host, '/'), '/') << std::endl;
-
+	ParsedUrl h(host);
 
 	return string("whut");
 }
 
 
 
-int main(int argc, char const *argv[]){
-	string h("http://thing");
-	string p("what/stuff/goes");
+// int main(int argc, char const *argv[]){
+// 	// string h("http://thing");
+// 	// string p("what/stuff/goes");
 
-	join_url(h, p);
-	return 0;
-}
+// 	// join_url(h, p);
+// 	ParsedUrl url("lelandbatey.com/posts/2014/09/binary-tree-printer/");
+// 	ParsedUrl url2("/thing.html");
+
+// 	// std::cout << url2 << std::endl;
+
+// 	url.set_path("thing.html");
+// 	std::cout << url << std::endl;
+// 	return 0;
+// }
