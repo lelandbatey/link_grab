@@ -195,7 +195,7 @@ void XmlTree::build_tree(istringstream* input_document){
 		} else if (state == "closing"){
 			if (cc == '>'){
 				XmlNode* tn = parent;
-				std::cout << tn->get_type() << std::endl;
+				// std::cout << tn->get_type() << std::endl;
 				while (tn->get_type() != tmp_type){
 					if (tn->is_root()){
 						std::cout << parent->get_type() << std::endl;
@@ -213,7 +213,7 @@ void XmlTree::build_tree(istringstream* input_document){
 				tmp_type.push_back(cc);
 			}
 		}
-		std::cout << cc << ", " << state << std::endl;
+		// std::cout << cc << ", " << state << std::endl;
 	}
 	// return root;
 }

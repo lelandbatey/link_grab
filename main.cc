@@ -9,8 +9,10 @@ using namespace std;
 
 int main(int argc, char const *argv[]){
     string url;
+    ParsedUrl full_url("localhost/");
     if (argc > 1){
         url = argv[1];
+        full_url = ParsedUrl(url);
     } else {
         std::cout << "Please enter a url." << std::endl;
         return 0;
@@ -25,7 +27,8 @@ int main(int argc, char const *argv[]){
     vector<string> links = tree.find_all_attributes("href");
 
     for (int i = 0; i < links.size(); ++i){
-        std::cout << links[i] << std::endl;
+
+        std::cout << join_url(string(url), links[i]) << std::endl;
     }
 
     // XmlNode* parsed_doc = build_xml_tree_from_string(test_doc);

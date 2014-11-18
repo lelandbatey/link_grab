@@ -86,6 +86,12 @@ ParsedUrl::ParsedUrl(string begin_str):
 	// std::cout << "Path: '" << path_buf << "'"<< std::endl;
 
 }
+
+string ParsedUrl::get_scheme(){ return _scheme; };
+string ParsedUrl::get_host(){ return _host; }
+int ParsedUrl::get_port(){ return _port; }
+string ParsedUrl::get_path(){ return _path; }
+
 string ParsedUrl::get_url(){
 	// Ternery if so we only include port if it's not 80
 	return string(this->_scheme+"://"+this->_host
@@ -98,6 +104,13 @@ ostream& operator<< (ostream &out, ParsedUrl &pUrl){
 }
 
 void ParsedUrl::set_path(string path){
+
+	// If a path is a url
+	if (path.find("://") != std::string::npos){
+		ParsedUrl purl(path);
+		path = purl.get_path();
+	}
+
 	std::vector<string> spl_path = split(path, '/');
 	string p("");
 
@@ -125,7 +138,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-string join(std::vector<string> v, char delim){
+string rejoin(std::vector<string> v, char delim){
 	string ret;
 	for (int i = 0; i < v.size()-1; ++i){
 		ret += v[i];
@@ -148,7 +161,9 @@ void print_vect(std::vector<string> v){
 string join_url(string host, string path){
 	ParsedUrl h(host);
 
-	return string("whut");
+	h.set_path(path);
+
+	return h.get_url();
 }
 
 
