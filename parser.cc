@@ -9,27 +9,14 @@
 #include <map>
 
 #include "parser.h"
+#include "parse_str.h"
+
+#pragma once
 
 using namespace std;
 
 
 
-
-int upper(int c){
-  return std::toupper((unsigned char)c);
-}
-int lower(int c){
-  return std::tolower((unsigned char)c);
-}
-std::string strLower(std::string str){
-    std::transform(str.begin(), str.end(), str.begin(), lower); // Make it lowercase
-    return str;
-}
-std::string strUpper(std::string str) {
-    std::transform(str.begin(), str.end(), str.begin(), upper); // Make it uppercase
-
-    return str;
-}
 
 
 
@@ -87,26 +74,19 @@ void XmlNode::add_child(XmlNode* child){
 	_children.push_back(child);
 }
 
-XmlNode::XmlNode(string type):_parent(0){
-	_type = strLower(type);
-}
+XmlNode::XmlNode(string type):_parent(0), _type(strLower(type)){}
 
-XmlNode::XmlNode(string type, map<string, string> attributes):_parent(0){
-	_type = strLower(type);
-	_attributes = attributes;
-}
+XmlNode::XmlNode(string type, map<string, string> attributes):
+	_parent(0), _type(strLower(type)), _attributes(attributes){}
 
-XmlNode::XmlNode(XmlNode* parent, string type, string contents):_parent(0){
-	_type = strLower(type);
-	_contents = contents;
-	_parent = parent;
+XmlNode::XmlNode(XmlNode* parent, string type, string contents):
+	_parent(parent), _type(strLower(type)), _contents(contents){
+
 	_parent->add_child(this);
 }
 
-XmlNode::XmlNode(XmlNode* parent, string type, map<string, string> attributes):_parent(0){
-	_type = strLower(type);
-	_attributes = attributes;
-	_parent = parent;
+XmlNode::XmlNode(XmlNode* parent, string type, map<string, string> attributes):
+	_type(strLower(type)), _attributes(attributes), _parent(parent){
 	_parent->add_child(this);
 }
 
@@ -136,6 +116,7 @@ void xml_tree_printer(XmlNode* node){
 	}
 
 }
+
 
 void print_xml_tree(XmlNode* root){
 	xml_tree_printer(root);
@@ -177,8 +158,6 @@ XmlNode* build_xml_tree(istringstream* input_document){
 	string tmp_key, tmp_value;
 	string tmp_type;
 
-	// Stands for "current character"
-	char cc;
 
 	// State will be our flag for which part of the parsing process we are
 	// currently doing. Possible states are:
@@ -196,6 +175,8 @@ XmlNode* build_xml_tree(istringstream* input_document){
 	string state("");
 
 	while (!document.eof()){
+		// Stands for "current character"
+		char cc;
 		cc = document.get();
 
 		if (document.eof()){
@@ -298,8 +279,6 @@ XmlNode* build_xml_tree(istringstream* input_document){
 				}
 
 				parent = tn->get_parent();
-				state = "";
-				tmp_type = "";
 				_CLEAR_;
 			} else {
 
