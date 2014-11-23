@@ -8,6 +8,7 @@
 #include <map>
 
 #include "xml_tree.h"
+#include "parse_str.h"
 
 
 XmlTree::XmlTree(): _root(string("root")){}
@@ -18,8 +19,9 @@ XmlTree::XmlTree(string& input_document): _root(string("root")){
 
 
 void XmlTree::build_xml_tree(string& input_document){
-	istringstream doc(input_document);
-	build_tree(&doc);
+	ParseStr doc(input_document);
+	// istringstream doc(input_document);
+	build_tree(doc);
 }
 
 // Trampoline into the recursive search below
@@ -55,8 +57,8 @@ tmp_type = ""; \
 attributes.clear(); 
 #endif
 
-void XmlTree::build_tree(istringstream* input_document){
-	istringstream& document = *input_document; 
+void XmlTree::build_tree(ParseStr& document){
+	// istringstream& document = *input_document;
 	XmlNode* root = &_root;
 
 	XmlNode* parent = root;
