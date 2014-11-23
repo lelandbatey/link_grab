@@ -64,13 +64,13 @@ void XmlNode::add_child(XmlNode* child){
 	_children.push_back(child);
 }
 
-XmlNode::XmlNode(string type):_parent(0), _type(strLower(type)){}
+XmlNode::XmlNode(string type):_type(strLower(type)), _parent(0){}
 
 XmlNode::XmlNode(string type, map<string, string> attributes):
-	_parent(0), _type(strLower(type)), _attributes(attributes){}
+	_type(strLower(type)), _attributes(attributes), _parent(0){}
 
 XmlNode::XmlNode(XmlNode* parent, string type, string contents):
-	_parent(parent), _type(strLower(type)), _contents(contents){
+	_type(strLower(type)), _contents(contents), _parent(parent){
 
 	_parent->add_child(this);
 }
