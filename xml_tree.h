@@ -3,6 +3,7 @@
 #include <string>
 
 #include "xml_node.cc"
+#include "parse_str.h"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ public:
 
 private:
 	XmlNode _root;
-	void build_tree(istringstream* input_document);
+	void build_tree(ParseStr& document);
 	void find_attrs(string attr_val, XmlNode* node, vector<string>* found);
 };
 

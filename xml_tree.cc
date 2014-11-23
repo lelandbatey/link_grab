@@ -40,11 +40,42 @@ void XmlTree::find_attrs(string attr_val, XmlNode* node, vector<string>* found){
 
 	if (node->has_children()){
 		vector<XmlNode*> children = node->get_children();
-		for (int i = 0; i < children.size(); ++i){
+		for (unsigned int i = 0; i < children.size(); ++i){
 			find_attrs(attr_val, children[i], found);
 		}
 	}
 
+}
+
+void xml_tree_printer(XmlNode* node){
+	for (int i = 0; i < node->get_depth(); ++i){
+		std::cout << "    ";
+	}
+	if (node->has_text()){
+		std::cout << "'" << node->get_text() << "'" << std::endl;
+	} else {
+		std::cout << "<" << node->get_type() << ">" << std::endl;
+	}
+
+	if (node->has_children()){
+		vector<XmlNode*> children = node->get_children();
+		for (unsigned int i = 0; i < children.size(); ++i){
+			xml_tree_printer(children[i]);
+		}
+	}
+
+	if (!node->has_text()){
+		for (int i = 0; i < node->get_depth(); ++i){
+			std::cout << "    ";
+		}
+		std::cout << "</" << node->get_type() << ">" << std::endl;
+
+	}
+
+}
+
+void XmlTree::print_xml_tree(){
+	xml_tree_printer(&_root);
 }
 
 // Macro for conveniently clearing all variables.
@@ -153,7 +184,20 @@ void XmlTree::build_tree(ParseStr& document){
 				parent = new XmlNode(parent, type, attributes);
 				_CLEAR_;
 			}
+
+			if (type.size() && cc == '/'){
+				state = "closing";
+				// Do this so if we immediately close this tag
+				buffer = "/";
+			}
 		} else if (state == "value"){
+
+			// Macro for smaller saves
+			#define _SAVE_VAL_ \
+			attributes[strLower(tmp_key)] = tmp_value;\
+			tmp_value = ""; \
+			tmp_key = ""; \
+
 			// We get the value of things in quotes
 			char delim = 0;
 			if (cc == '"' || cc == '\''){
@@ -172,17 +216,40 @@ void XmlTree::build_tree(ParseStr& document){
 					}
 					cc = document.get();
 				}
-				attributes[strLower(tmp_key)] = tmp_value;
-				tmp_value = "";
-				tmp_key = "";
+				_SAVE_VAL_;
 				state = "key";
+			} else{
+				// Stuff isn't always in quotes though, so we have to go till we
+				// hit a space or a "/" or a ">"
+				while (!(isspace(cc) || cc == '/' || cc == '>')){
+					tmp_value.push_back(cc);
+					cc = document.get();
+				}
+
+				if (cc == ' '){
+					_SAVE_VAL_;
+					state = "key";
+				} else if (cc == '/'){
+					// For a self-closing tag
+					_SAVE_VAL_;
+
+					buffer = "/";
+					state = "closing";
+				} else if (cc == '>'){
+					// For a self-closing tag
+					_SAVE_VAL_;
+
+					// So that the correct case is actually handled.
+					document.shift_back(1);
+					state = "key";
+				}
 			}
 		} else if (state == "text"){
 			if (cc != '<'){
 				contents.push_back(cc);
 			} else {
 				// Prevents just whitespace from being made into a text node.
-				for (int i = 0; i < contents.length(); ++i){
+				for (unsigned int i = 0; i < contents.length(); ++i){
 					if (!isspace(contents.c_str()[i])){
 						new XmlNode(parent, string("text"), contents);
 						break;
@@ -194,19 +261,35 @@ void XmlTree::build_tree(ParseStr& document){
 			}
 		} else if (state == "closing"){
 			if (cc == '>'){
-				XmlNode* tn = parent;
-				while (tn->get_type() != tmp_type){
-					if (tn->is_root()){
-						// Force a segfault out of rage
-						std::cout << "THIS XML DOCUMENT IS STUPID AND I HATE IT. WE'RE DONE!" << std::endl;
-						tn = 0;
-						tn->is_root();
-					}
-					tn = tn->get_parent();
-				}
 
-				parent = tn->get_parent();
-				_CLEAR_;
+				// Case which handles self closing tags like <input />
+				if (buffer == "/"){
+					buffer = "";
+					new XmlNode(parent, type, attributes);
+					_CLEAR_;
+				} else {
+					// std::cout << "'" << buffer << "'" << std::endl;		
+					XmlNode* tn = parent;
+					while (tn->get_type() != tmp_type){
+						if (tn->is_root()){
+							// document.dump();
+							// print_xml_tree();
+
+							// xml_tree_printer(parent);
+							// std::cout << "'" << parent->get_attribute("value") << "'" << std::endl;
+							// Force a segfault out of rage
+							// std::cout << "THIS XML DOCUMENT IS STUPID AND I HATE IT. WE'RE DONE!" << std::endl;
+							std::cout << "XML Document is malformed." << std::endl;
+							return;
+							// tn = 0;
+							// tn->is_root();
+						}
+						tn = tn->get_parent();
+					}
+
+					parent = tn->get_parent();
+					_CLEAR_;
+				}
 			} else {
 
 				tmp_type.push_back(cc);
