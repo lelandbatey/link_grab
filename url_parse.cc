@@ -93,23 +93,37 @@ string ParsedUrl::get_url(){
 		+ (this->_port != 80?":"+dubToStr(double(this->_port)):"")
 		+ this->_path);
 }
+
 ostream& operator<< (ostream &out, ParsedUrl &pUrl){
 	out << pUrl.get_url();
 	return out;
 }
 
+ParsedUrl& ParsedUrl::operator=(const ParsedUrl& a){
+	_scheme = a._scheme;
+	_host = a._host;
+	_port = a._port;
+	_path = a._path;
+	return *this;
+}
+
+
 void ParsedUrl::set_path(string path){
 
 	// If a path is a url
+
 	if (path.find("://") != std::string::npos){
 		ParsedUrl purl(path);
-		path = purl.get_path();
+
+		*this = purl;
+		return;
+		// path = purl.get_path();
 	}
 
 	std::vector<string> spl_path = split(path, '/');
 	string p("");
 
-	for (int i = 0; i < spl_path.size(); ++i){
+	for (unsigned int i = 0; i < spl_path.size(); ++i){
 		if (spl_path[i].length()){
 			p += "/"+spl_path[i];
 		}
@@ -135,7 +149,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 string rejoin(std::vector<string> v, char delim){
 	string ret;
-	for (int i = 0; i < v.size()-1; ++i){
+	for (unsigned int i = 0; i < v.size()-1; ++i){
 		ret += v[i];
 		ret.push_back(delim);
 	}
@@ -145,8 +159,8 @@ string rejoin(std::vector<string> v, char delim){
 
 // Prints out a vector of strings
 void print_vect(std::vector<string> v){
-	int i;
-	for (i = 0; i < v.size(); ++i){
+
+	for (unsigned int i = 0; i < v.size(); ++i){
 		std::cout << "'" << v[i] << "', ";
 	}
 	std::cout << v.size() << std::endl;

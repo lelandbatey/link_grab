@@ -4,6 +4,10 @@
 #include <iostream>
 #include <sstream>
 
+#ifndef _DEBUG_
+#define _DEBUG_ 0
+#endif
+
 using namespace std;
 
 
@@ -15,6 +19,7 @@ public:
 
 	char get(){
 		char cc;
+
 		if (_pos < _str.size()){
 			cc = _str[_pos];
 			++_pos;
@@ -32,10 +37,23 @@ public:
 		return _eof;
 	}
 
+	void dump(){
+		if (_DEBUG_){
+			for (unsigned int i = 0; i < _pos; ++i){
+				std::cout << _str[i];
+			}
+			std::cout << std::endl;
+		}
+	}
+
+	void shift_back(unsigned int back){
+		_pos -= back;
+	}
+
 
 private:
 	string _str;
-	int _pos;
+	unsigned int _pos;
 	bool _eof;
 	
 };

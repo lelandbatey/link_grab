@@ -22,7 +22,7 @@ int main(int argc, char const *argv[]){
     XmlTree tree(test_doc);
     vector<string> links = tree.find_all_attributes("href");
 
-    for (int i = 0; i < links.size(); ++i){
+    for (unsigned int i = 0; i < links.size(); ++i){
         std::cout << join_url(string(url), links[i]) << std::endl;
     }
 

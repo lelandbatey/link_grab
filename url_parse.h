@@ -25,6 +25,8 @@ public:
 	ParsedUrl(string begin_str);
 
 	friend ostream& operator<< (ostream &out, ParsedUrl &pUrl);
+	ParsedUrl& operator= (const ParsedUrl& a);
+
 	string get_scheme();
 	string get_host();
 	int get_port();
@@ -32,6 +34,7 @@ public:
 	string get_url();
 
 	void set_path(string path);
+
 
 private:
 	string _scheme;
