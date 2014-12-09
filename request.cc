@@ -18,9 +18,9 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, struct url_data *data) {
 
     data->size += (size * nmemb);
 
-#ifdef DEBUG
-    fprintf(stderr, "data at %p size=%zu nmemb=%zu\n", ptr, size, nmemb);
-#endif
+// #ifdef DEBUG
+//     fprintf(stderr, "data at %p size=%zu nmemb=%zu\n", ptr, size, nmemb);
+// #endif
     tmp = (char*)realloc(data->data, data->size + 1); /* +1 for '\0' */
 
     if(tmp) {

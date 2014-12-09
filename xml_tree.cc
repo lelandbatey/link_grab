@@ -279,7 +279,7 @@ void XmlTree::build_tree(ParseStr& document){
 							// std::cout << "'" << parent->get_attribute("value") << "'" << std::endl;
 							// Force a segfault out of rage
 							// std::cout << "THIS XML DOCUMENT IS STUPID AND I HATE IT. WE'RE DONE!" << std::endl;
-							std::cout << "XML Document is malformed." << std::endl;
+							std::cerr << "XML Document is malformed." << std::endl;
 							return;
 							// tn = 0;
 							// tn->is_root();

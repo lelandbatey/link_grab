@@ -1,4 +1,5 @@
 #include "url_parse.h"
+#include "lazy_string.h"
 #include <string>
 #include <vector>
 #include <iostream>

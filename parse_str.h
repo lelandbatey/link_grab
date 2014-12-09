@@ -4,8 +4,8 @@
 #include <iostream>
 #include <sstream>
 
-#ifndef _DEBUG_
-#define _DEBUG_ 0
+#ifndef DEBUG
+#define DEBUG 0
 #endif
 
 using namespace std;
@@ -38,7 +38,7 @@ public:
 	}
 
 	void dump(){
-		if (_DEBUG_){
+		if (DEBUG){
 			for (unsigned int i = 0; i < _pos; ++i){
 				std::cout << _str[i];
 			}
@@ -57,34 +57,6 @@ private:
 	bool _eof;
 	
 };
-
-std::string dubToStr(double dub) {
-    std::ostringstream temp;
-
-    temp << dub;
-    
-    std::string result(temp.str());
-    return result; 
-}
-
-int upper(int c){
-  return std::toupper((unsigned char)c);
-}
-int lower(int c){
-  return std::tolower((unsigned char)c);
-}
-std::string strLower(std::string str){
-    std::transform(str.begin(), str.end(), str.begin(), lower); // Make it lowercase
-    return str;
-}
-std::string strUpper(std::string str) {
-    std::transform(str.begin(), str.end(), str.begin(), upper); // Make it uppercase
-
-    return str;
-}
-
-
-
 
 
 #endif

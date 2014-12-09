@@ -1,9 +1,10 @@
 #include <iostream>
 #include <string>
+// #include "./html_parser/html_parser.cc"
 #include "xml_node.cc"
+#include "xml_tree.cc"
 #include "request.cc"
 #include "url_parse.cc"
-#include "xml_tree.cc"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ int main(int argc, char const *argv[]){
 
     string test_doc(page);
     XmlTree tree(test_doc);
+    // HtmlParser tree(test_doc);
     vector<string> links = tree.find_all_attributes("href");
 
     for (unsigned int i = 0; i < links.size(); ++i){
