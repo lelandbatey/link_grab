@@ -1,7 +1,7 @@
 
 BIN_DIR = ~/bin/
 OUTPUT_NAME = link_grab
-COMPILER = g++ -D_DEBUG_ -g -std=c++11 -Wall
+COMPILER = g++ -DDEBUG -g -std=c++11 -Wall
 
 executable:
 	$(COMPILER) main.cc -lcurl -o $(OUTPUT_NAME)
