@@ -1,8 +1,6 @@
 #include <iostream>
 #include <string>
 #include "./html_parser/html_parser.cc"
-// #include "xml_node.cc"
-// #include "xml_tree.cc"
 #include "request.cc"
 #include "url_parse.cc"
 
@@ -20,8 +18,8 @@ int main(int argc, char const *argv[]){
     char* page = handle_url(url.c_str());
 
     string test_doc(page);
-    // XmlTree tree(test_doc);
-    HtmlParser tree(test_doc);
+
+    htmlparser::HtmlParser tree(test_doc);
     vector<string> links = tree.find_all_attributes("href");
 
     for (unsigned int i = 0; i < links.size(); ++i){

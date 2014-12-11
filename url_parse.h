@@ -31,8 +31,10 @@ public:
 	string get_host();
 	int get_port();
 	string get_path();
+	string get_fragment();
 	string get_url();
 
+	void parse_url(string in_url);
 	void set_path(string path);
 
 
@@ -41,6 +43,7 @@ private:
 	string _host;
 	int _port;
 	string _path;
+	string _fragment;
 };
 
 
