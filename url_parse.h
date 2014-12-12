@@ -35,8 +35,6 @@ public:
 	string get_url();
 
 	void parse_url(string in_url);
-	void set_path(string path);
-
 
 private:
 	string _scheme;
@@ -50,7 +48,6 @@ private:
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
 std::vector<std::string> split(const std::string &s, char delim);
 string join_url(string host, string path);
-
 
 
 #endif

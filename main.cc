@@ -1,13 +1,13 @@
 #include <iostream>
 #include <string>
+#include <map>
 #include "./html_parser/html_parser.cc"
 #include "request.cc"
 #include "url_parse.cc"
 
-using namespace std;
 
 int main(int argc, char const *argv[]){
-    string url;
+    std::string url;
     if (argc > 1){
         url = argv[1];
     } else {
@@ -17,14 +17,20 @@ int main(int argc, char const *argv[]){
 
     char* page = handle_url(url.c_str());
 
-    string test_doc(page);
+    std::string test_doc(page);
 
     htmlparser::HtmlParser tree(test_doc);
-    vector<string> links = tree.find_all_attributes("href");
+    std::vector<std::string> links = tree.find_all_attributes("href");
 
+    // Keeps links from being printed multiple times
+    std::map<std::string, std::string> unique_links;
     for (unsigned int i = 0; i < links.size(); ++i){
-        std::cout << join_url(string(url), links[i]) << std::endl;
+        unique_links[join_url(std::string(url), links[i])] = "";
     }
+    for (auto it = unique_links.begin(); it != unique_links.cend(); ++it){
+        std::cout << (*it).first << std::endl;
+    }
+
 
     return 0;
 }
