@@ -42,9 +42,9 @@ void ParsedUrl::parse_url(std::string inurl){
 		inurl = inurl.substr(position + 3);
 		position = inurl.find_first_of("/#");		
 		
-		if (inurl.size() && position != std::string::npos){
+		if (inurl.size()){
 			position = inurl.find_first_of("/");
-			position = position!=std::string::npos?position:0;
+			// position = position!=std::string::npos?position:0;
 			_host = inurl.substr(0, position);
 
 			// Removes the port number
@@ -55,8 +55,11 @@ void ParsedUrl::parse_url(std::string inurl){
 	} else {
 		position = 0;
 	}
-
-	inurl = inurl.substr(position);
+	if (position < inurl.size()){
+		inurl = inurl.substr(position);
+	} else {
+		inurl = "";
+	}
 
 	position = inurl.find("#");
 	if (inurl.size()){
