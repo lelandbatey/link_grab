@@ -1,5 +1,5 @@
-#include "url_parse.h"
-#include "lazy_string.h"
+#include "url_parse.hpp"
+#include "lazy_string.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -44,7 +44,6 @@ void ParsedUrl::parse_url(std::string inurl){
 		
 		if (inurl.size()){
 			position = inurl.find_first_of("/");
-			// position = position!=std::string::npos?position:0;
 			_host = inurl.substr(0, position);
 
 			// Removes the port number
@@ -154,16 +153,16 @@ std::string join_url(std::string first, std::string second){
 // Two functions for splitting a string. The first uses a pre-constructed
 // vector, the second returns a new vector.
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
 }
 std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
+	std::vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
 }
 
