@@ -23,7 +23,7 @@ void ParsedUrl::parse_url(std::string inurl){
 	// a hostname. However, it has a special case for schemeless absolute
 	// urls, which are specified with a '//'.
 	
-	unsigned int position = inurl.find("://");
+	size_t position = inurl.find("://");
 
 	// Handle absolute links specially
 	if (inurl.find("//") == 0){

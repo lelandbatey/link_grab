@@ -7,7 +7,7 @@ Scrapes a page for all links, printing them to stdout. Great for batch downloadi
 Prerequisites
 -------------
 
-You'll need to install the `libcurl` libraries. On Cygwin these are just called `libcurl`. On Ubuntu you'd install `libcurl4-gnutls-dev`.
+You'll need to install the `libcurl` libraries. On Cygwin these are just called `libcurl`. On Debian (and derivatives) you'd install libcurl-dev (provided tested with GNU's: libcurl4-gnutls-dev).
 
 
 Installation
