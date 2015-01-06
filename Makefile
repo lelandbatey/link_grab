@@ -3,6 +3,9 @@ BIN_DIR = ~/bin/
 OUTPUT_NAME = link_grab
 COMPILER = g++ -DDEBUG -g -std=c++11 -Wall
 
+html_parser/html_parser.cpp:
+	git submodule foreach git pull origin master
+
 executable:
 	$(COMPILER) main.cpp -lcurl -o $(OUTPUT_NAME)
 
