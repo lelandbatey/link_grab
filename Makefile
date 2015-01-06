@@ -1,21 +1,22 @@
 
 BIN_DIR = ~/bin/
 OUTPUT_NAME = link_grab
-COMPILER = g++ -DDEBUG -g -std=c++11 -Wall
+COMPILER = g++ -g -std=c++11
+
+all: executable
 
 html_parser/html_parser.cpp:
-	git submodule foreach git pull origin master
+	git submodule init && git submodule update && git submodule foreach git pull origin master
 
-executable:
+executable: html_parser/html_parser.cpp
 	$(COMPILER) main.cpp -lcurl -o $(OUTPUT_NAME)
 
 clean:
 	rm -fv $(OUTPUT_NAME)
 
+debug: COMPILER = g++ -DDEBUG -g -std=c++11 -Wall
+debug: clean executable
 
-all: executable
-
-release: COMPILER = g++ -g -std=c++11
 release: clean executable
 
 install: release
