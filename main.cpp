@@ -10,6 +10,7 @@
 #include "./html_parser/html_parser.cpp"
 #include "./arg_parse/arg_parse.cpp"
 #include "url_parse.cpp"
+#include "print_help.cpp"
 
 #ifndef NO_CURL
 #define NO_CURL 0
@@ -36,7 +37,14 @@ std::string read_stdin(){
 
 int main(int argc, char const *argv[]){
 	auto url = std::string("");
+	auto read_from = std::string("");
 	auto args = argparse::ArgumentParser(argc, argv);
+
+	// Print our help message.
+	if (args.option_exists("help") or args.bare_arg_exists("help")){
+		print_help();
+		return 0;
+	}
 
 	// Use the argument parser to discern which url the user has specified.
 	if (args.option_exists("url")){
@@ -58,17 +66,19 @@ int main(int argc, char const *argv[]){
 		}
 	}
 	if (url.empty() && argc > 1){
-		std::cout << "Please enter a url." << std::endl;
+		std::cout << "No url specified, exiting." << std::endl;
 		return 0;
-	} else if (argc == 1){
-		url = "stdin";
 	}
 
-	// Check if the user want's us to read from stdin.
+	// Check if the user wants us to read from stdin or from a url
+	if (args.option_exists("stdin") or args.bare_arg_exists("stdin")){
+		read_from = "stdin";
+	} else {
+		read_from = "url";
+	}
+
 	const char* page;
-	if (args.option_exists("stdin")){
-		page = read_stdin().c_str();
-	} else if (url == "stdin"){
+	if (read_from == "stdin"){
 		page = read_stdin().c_str();
 	} else {
 #if NO_CURL
@@ -81,9 +91,9 @@ int main(int argc, char const *argv[]){
 #endif
 	}
 
-	std::string test_doc(page);
+	std::string document(page);
 
-	htmlparser::HtmlParser tree(test_doc);
+	htmlparser::HtmlParser tree(document);
 	std::vector<std::string> links = tree.find_all_attributes("href");
 
 	// Keeps links from being printed multiple times
