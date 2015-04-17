@@ -24,6 +24,7 @@ class ParsedUrl
 public:
 	ParsedUrl(string begin_str);
 
+	// Operator usable only for printing e.g. via `cout`
 	friend ostream& operator<< (ostream &out, ParsedUrl &pUrl);
 	ParsedUrl& operator= (const ParsedUrl& a);
 
