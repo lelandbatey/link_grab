@@ -152,17 +152,39 @@ std::string join_url(std::string first, std::string second){
 
 // Two functions for splitting a string. The first uses a pre-constructed
 // vector, the second returns a new vector.
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-	std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-		elems.push_back(item);
+// std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+// 	std::stringstream ss(s);
+// 	std::string item;
+// 	while (std::getline(ss, item, delim)) {
+// 		elems.push_back(item);
+// 	}
+// 	return elems;
+// }
+// std::vector<std::string> split(const std::string &s, char delim) {
+// 	std::vector<std::string> elems;
+// 	split(s, delim, elems);
+// 	return elems;
+// }
+std::vector<std::string> split(const std::string &instr, std::string delim){
+	auto start = 0;
+	auto end = 0;
+
+	std::vector<std::string> wlist;
+
+	end = instr.find(delim, start);
+	auto length = end;
+	wlist.push_back(instr.substr(start, length));
+
+	while (1){
+		if (end == std::string::npos){
+			return wlist;
+		}
+		start = instr.find(delim, end);
+
+		end = instr.find(delim, start+1);
+		auto length = end - (start+1);
+		wlist.push_back(instr.substr(start+1, length));
 	}
-	return elems;
-}
-std::vector<std::string> split(const std::string &s, char delim) {
-	std::vector<std::string> elems;
-	split(s, delim, elems);
-	return elems;
+
 }
 

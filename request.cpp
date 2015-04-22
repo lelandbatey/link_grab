@@ -2,6 +2,7 @@
 #include <curl/curl.h>
 #include <string.h>
 #include <stdlib.h>
+#include "entities.c"
 
 // This entire file was pretty shamelessly copied from here:
 //  http://stackoverflow.com/a/13906020/
@@ -68,6 +69,7 @@ char *handle_url(const char* url) {
 		curl_easy_cleanup(curl);
 
 	}
+	decode_html_entities_utf8(data.data, 0);
 	return data.data;
 }
 
